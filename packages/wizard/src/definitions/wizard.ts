@@ -147,6 +147,7 @@ declare global {
           Hr,
         >(
           meta: {
+            description?: string
             body?: B
             params?: P
             queries?: Q

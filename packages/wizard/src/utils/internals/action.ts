@@ -11,7 +11,9 @@ export const actionActions = createActions(
       const queriesSchema = meta.queries && createAsyncSchema(meta.queries)
 
       return serviceOptions => ({
-        ...((meta.rest ? { rest: meta.rest } : {}) as BlobType),
+        // We dont have access to service's name in here
+        // so we return meta datas for adding these to swagger in service module
+        meta: meta,
         handler: capsule(
           // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Redundant
           async ctx => {
