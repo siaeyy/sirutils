@@ -9,6 +9,7 @@ const usersService = await wizard.api.service({
   actions: {
     create: wizard.api.createAction(
       {
+        description: 'Create user',
         body: {
           name: 'string',
         },
