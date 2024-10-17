@@ -52,7 +52,7 @@ export const actionActions = createActions(
                   ctx.params.req.method === 'DELETE'
 
                 // @ts-ignore
-                const subctx: Sirutils.Wizard.ActionContext<BlobType, BlobType, BlobType> = {
+                const subctx: Sirutils.Wizard.ActionContext<BlobType, BlobType, BlobType, BlobType> = {
                   body: ctx.params.req.body ?? ({} as BlobType),
                   req: ctx.params.req,
                   res: ctx.params.res,
@@ -150,7 +150,10 @@ export const actionActions = createActions(
                   unwrap(await bodySchema(subctx.body as BlobType), wizardTags.invalidBody)
                 }
 
-                return rawHandler(subctx)
+                // Process through the middlewares if there are
+                // And continue or return data according to the result
+                const middlewaresResult = await context.api.processMiddlewares(subctx, meta.middlewares ?? [])
+                return middlewaresResult.continue ? rawHandler(subctx) : middlewaresResult.returnedData
               }
 
               if (meta.rest) {
@@ -176,7 +179,7 @@ export const actionActions = createActions(
                 )
               }
 
-              const subctx: Sirutils.Wizard.ActionContext<BlobType, BlobType, BlobType> = {
+              const subctx: Sirutils.Wizard.ActionContext<BlobType, BlobType, BlobType, BlobType> = {
                 body: isParamsStream ? ctx.meta : ctx.params,
                 logger: serviceLogger,
                 raw: ctx,
@@ -191,7 +194,10 @@ export const actionActions = createActions(
                   : [ctx.params, getDetails(ctx.params, ctx.meta.$params)]
               }
 
-              return rawHandler(subctx)
+              // Process through the middlewares if there are
+              // And continue or return data according to the result
+              const middlewaresResult = await context.api.processMiddlewares(subctx, meta.middlewares ?? [])
+              return middlewaresResult.continue ? rawHandler(subctx) : middlewaresResult.returnedData
             },
             `${wizardTags.action}#createAction.handler.${serviceOptions.name}@${serviceOptions.version}#${actionName}` as Sirutils.ErrorValues,
             context.$cause

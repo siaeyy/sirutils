@@ -8,6 +8,7 @@ export const wizardTags = {
   plugin: createTag('plugin'),
   service: createTag('service'),
   action: createTag('action'),
+  middleware: createTag('middleware'),
   httpMixin: createTag('http-mixin'),
   getDetails: createTag('get-details'),
 
